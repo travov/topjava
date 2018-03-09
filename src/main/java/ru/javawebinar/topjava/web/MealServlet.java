@@ -1,9 +1,12 @@
 package ru.javawebinar.topjava.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.javawebinar.topjava.dao.MealDao;
+import ru.javawebinar.topjava.dao.MealDaoImpl;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,24 +14,69 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class MealServlet extends HttpServlet {
-    private List<Meal> listOfMeals = Arrays.asList(
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
-            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
-    );
+    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+
+
+    private MealDao dao;
+    public MealServlet() {
+        super();
+        dao = new MealDaoImpl();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<MealWithExceed> exceedList = MealsUtil.getFilteredWithExceeded(listOfMeals, LocalTime.MIN, LocalTime.MAX, 2000);
-        req.setAttribute("listOfAllMeals", exceedList);
-        req.getRequestDispatcher("meals.jsp").forward(req, resp);
+        String forward = "";
+        String action = req.getParameter("action");
+        if (action == null){
+            forward = "/meals.jsp";
+            req.setAttribute("listOfAllMeals", MealsUtil.getFilteredWithExceeded(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000).stream().
+                    sorted(Comparator.comparingInt(MealWithExceed::getId)).collect(Collectors.toList()));
+        }
+        else if (action.equalsIgnoreCase("edit")){
+            forward = "/mealForm.jsp";
+            req.setAttribute("meal", dao.getMealById(Integer.parseInt(req.getParameter("id"))));
+        }
+        else if (action.equalsIgnoreCase("delete")){
+            dao.deleteMeal(Integer.parseInt(req.getParameter("id")));
+            forward = "/meals.jsp";
+            req.setAttribute("listOfAllMeals", MealsUtil.getFilteredWithExceeded(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000).stream().
+                    sorted(Comparator.comparingInt(MealWithExceed::getId)).collect(Collectors.toList()));
+        }
+        else if (action.equalsIgnoreCase("insert")){
+            forward = "/mealForm.jsp";
+        }
+        req.getRequestDispatcher(forward).forward(req, resp);
 
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        String date = req.getParameter("date");
+
+
+        if (req.getParameter("id").equals("")){
+            Meal meal = new Meal(LocalDateTime.of(Integer.valueOf(date.split(" ")[0]), Integer.valueOf(date.split(" ")[1]),
+                    Integer.valueOf(date.split(" ")[2]),
+                    Integer.valueOf(date.split(" ")[3].split(":")[0]), Integer.valueOf(date.split(" ")[3].split(":")[1])),
+                    req.getParameter("description"), Integer.valueOf(req.getParameter("calories")));
+            dao.addMeal(meal);
+        }
+        else {
+            Meal meal = new Meal(LocalDateTime.of(Integer.valueOf(date.split("-")[0]), Integer.valueOf(date.split("-")[1]),
+                    Integer.valueOf(date.split("-")[2].split("T")[0]),
+                    Integer.valueOf(date.split("T")[1].split(":")[0]), Integer.valueOf(date.split("T")[1].split(":")[1])),
+                    req.getParameter("description"), Integer.valueOf(req.getParameter("calories")));
+            meal.setId(Integer.parseInt(req.getParameter("id")));
+            dao.update(meal);
+        }
+        req.setAttribute("listOfAllMeals", MealsUtil.getFilteredWithExceeded(dao.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000).stream().
+                sorted(Comparator.comparingInt(MealWithExceed::getId)).collect(Collectors.toList()));
+        req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
 }
