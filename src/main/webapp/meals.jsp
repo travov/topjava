@@ -20,6 +20,14 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>
+    <form method="post" action="meals">
+        <table>
+            <tr><td>От даты: <input type="date" name="startDate"></td> <td>От времени: <input type="time" name="startTime"></td></tr>
+            <tr><td>До даты: <input type="date" name="endDate"></td> <td>До времени: <input type="time" name="endTime"></td></tr>
+            <tr><td></td> <td><button type="submit">Filter</button>
+                <button onclick="window.history.back()" type="button">Cancel</button></td></tr>
+        </table>
+    </form>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">

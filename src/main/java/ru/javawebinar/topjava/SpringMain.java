@@ -20,10 +20,7 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email", "password", Role.ROLE_ADMIN));
 
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            //mealRestController.create(new Meal(LocalDateTime.now(), "Завтрак", 5000));
-            mealRestController.getFilteredList(LocalDate.of(2016, 5, 31), LocalTime.of(13, 0),
-                    null, null).
-                    forEach(meal -> System.out.println(meal.getDateTime()));
+            mealRestController.get(5);
         }
     }
 }

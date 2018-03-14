@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.mock;
 
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
@@ -17,7 +18,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(meal -> save(meal, 1));
+        MealsUtil.MEALS.forEach(meal -> save(meal, AuthorizedUser.id()));
     }
 
     @Override
@@ -34,8 +35,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        Meal meal = repository.remove(id);
-        return meal != null;
+        Meal meal = repository.get(id);
+        if (meal != null && meal.getUserId() == userId){
+            repository.remove(id);
+            return true;
+        }
+        else return false;
     }
 
     @Override
