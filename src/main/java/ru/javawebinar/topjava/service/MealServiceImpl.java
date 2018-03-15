@@ -47,16 +47,16 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<Meal> getAll() {
-        List<Meal> list = (List<Meal>) repository.getAll();
+    public List<Meal> getAll(int userId) {
+        List<Meal> list = (List<Meal>) repository.getAll(userId);
         if (list != null)
            return list;
         else return Collections.<Meal>emptyList();
     }
 
     @Override
-    public List<MealWithExceed> getFilteredList(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        List<MealWithExceed> list = MealsUtil.getWithExceeded(repository.getFilteredList(startDate, endDate), 2000);
+    public List<MealWithExceed> getFilteredList(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, int userId) {
+        List<MealWithExceed> list = MealsUtil.getWithExceeded(repository.getFilteredList(startDate, endDate, userId), 2000);
         LocalTime start = startTime == null? LocalTime.MIN: startTime;
         LocalTime end = endTime == null? LocalTime.MAX: endTime;
         list = list.stream().filter(meal -> DateTimeUtil.isBetweenDateOrTime(meal.getDateTime().toLocalTime(), start, end)).collect(Collectors.toList());

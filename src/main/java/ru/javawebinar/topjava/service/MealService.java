@@ -18,7 +18,7 @@ public interface MealService {
 
     void update(Meal meal, int userId);
 
-    List<Meal> getAll();
+    List<Meal> getAll(int userId);
 
-    List<MealWithExceed> getFilteredList(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime);
+    List<MealWithExceed> getFilteredList(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, int userId);
 }

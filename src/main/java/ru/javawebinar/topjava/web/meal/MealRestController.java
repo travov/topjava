@@ -41,11 +41,11 @@ public class MealRestController {
 
     public List<MealWithExceed> getAll(){
         log.info("getAll");
-        List<Meal> list = service.getAll();
+        List<Meal> list = service.getAll(AuthorizedUser.id());
         return MealsUtil.getWithExceeded(list, MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public List<MealWithExceed> getFilteredList(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime){
-            return service.getFilteredList(startDate, startTime, endDate, endTime);
+            return service.getFilteredList(startDate, startTime, endDate, endTime, AuthorizedUser.id());
     }
 }

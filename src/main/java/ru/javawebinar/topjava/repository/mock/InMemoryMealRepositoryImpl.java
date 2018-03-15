@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository.mock;
 
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
@@ -18,7 +17,8 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(meal -> save(meal, AuthorizedUser.id()));
+        MealsUtil.MEALS.forEach(meal -> save(new Meal(meal.getDateTime(), meal.getDescription(), meal.getCalories()), 1));
+        MealsUtil.MEALS.stream().filter(meal -> meal.getCalories() > 500).forEach(meal -> save(new Meal(meal.getDateTime(), meal.getDescription(), meal.getCalories()), 2));
     }
 
     @Override
@@ -52,12 +52,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values().stream().sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
+    public Collection<Meal> getAll(int userId) {
+        return repository.values().stream().filter(meal -> meal.getUserId() == userId).sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
     }
 
     @Override
-    public List<Meal> getFilteredList(LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getFilteredList(LocalDate startDate, LocalDate endDate, int userId) {
        LocalDate start = startDate == null? LocalDate.MIN: startDate;
        LocalDate end = endDate == null? LocalDate.MAX: endDate;
        return repository.values().stream().filter(meal ->DateTimeUtil.isBetweenDateOrTime(meal.getDate(), start, end)).sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
