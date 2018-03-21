@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS meals
+DROP TABLE IF EXISTS meals;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS global_seq;
@@ -26,10 +26,10 @@ CREATE TABLE user_roles
 );
 
 CREATE TABLE meals(
-  mealId       INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  userId       INTEGER,
-  dateTime     TIMESTAMP DEFAULT now() NOT NULL,
-  description  VARCHAR NOT NULL,
-  calories     INTEGER,
-  FOREIGN KEY (userId) REFERENCES users (id)
+  id            INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+  user_id       INTEGER,
+  date_time     TIMESTAMP DEFAULT now() NOT NULL,
+  description   VARCHAR NOT NULL,
+  calories      INTEGER,
+  FOREIGN KEY (user_id) REFERENCES users (id)
 );

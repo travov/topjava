@@ -40,7 +40,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
-                .addValue("dateTime", meal.getDateTime())
+                .addValue("user_id", userId)
+                .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories());
 
@@ -48,8 +49,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET dateTime=:dateTime, description=:description, calories=:calories " +
-                        "WHERE mealid=:id", map) == 0) {
+                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories " +
+                        "WHERE id=:id", map) == 0) {
             return null;
         }
         return meal;
@@ -57,20 +58,18 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE mealid=? && userid=?", id, userId) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> users = jdbcTemplate.query("SELECT * FROM meals WHERE mealid=? && userid=?", ROW_MAPPER, id, userId);
+        List<Meal> users = jdbcTemplate.query("SELECT * FROM meals WHERE id=? AND user_id=?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> list = jdbcTemplate.query("SELECT * FROM meals WHERE userid=? ORDER BY dateTime DESC", ROW_MAPPER, userId);
-        list.forEach(meal -> System.out.println(meal.getDateTime()));
-        return list;
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
