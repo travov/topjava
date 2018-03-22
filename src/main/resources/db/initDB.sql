@@ -31,5 +31,6 @@ CREATE TABLE meals(
   date_time     TIMESTAMP DEFAULT now() NOT NULL,
   description   VARCHAR NOT NULL,
   calories      INTEGER,
-  FOREIGN KEY (user_id) REFERENCES users (id)
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+CREATE INDEX meals_unique_userid_datetime ON meals(user_id, date_time);
