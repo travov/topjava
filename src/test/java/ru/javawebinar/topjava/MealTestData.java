@@ -44,4 +44,8 @@ public class MealTestData {
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
     }
+
+    public static void assertWithoutUser(Iterable<Meal> actual, Iterable<Meal> expected){
+        assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
+    }
 }

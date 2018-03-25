@@ -1,16 +1,37 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:user_id"),
+        @NamedQuery(name = Meal.All_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:user_id ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:user_id AND m.dateTime>=:start_date AND m.dateTime<=:end_date ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime = :date_time, m.calories = :calories, m.description=:description WHERE m.id=:id AND m.user.id=:user_id")
+})
+@Entity
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = "date_time", name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
+
+    public static final String DELETE = "Meal.delete";
+    public static final String All_SORTED = "Meal.getAllSorted";
+    public static final String BETWEEN = "Meal.getBetween";
+    public static final String UPDATE = "Meal.update";
+
+    @Column(name = "date_time")
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description")
+    @NotBlank
     private String description;
 
+    @Column(name = "calories")
+    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
