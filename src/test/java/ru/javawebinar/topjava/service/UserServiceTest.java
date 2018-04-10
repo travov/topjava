@@ -18,7 +18,7 @@ public abstract class UserServiceTest extends AbstractServiceTest {
 
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @Autowired
     private CacheManager cacheManager;
