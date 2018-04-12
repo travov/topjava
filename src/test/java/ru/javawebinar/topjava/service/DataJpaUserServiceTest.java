@@ -11,8 +11,11 @@ import ru.javawebinar.topjava.model.User;
 public class DataJpaUserServiceTest extends UserServiceTest {
 
     @Test
-    public void getWithMeals(){
+    public void getWithMeals() throws Exception{
         User actual = service.getWithMeals(UserTestData.ADMIN_ID);
-        Assertions.assertThat(actual).isEqualToIgnoringGivenFields(UserTestData.ADMIN, "registered", "roles");
+        User expected = UserTestData.ADMIN;
+        Assertions.assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "roles", "meals");
+        Assertions.assertThat(actual.getMeals()).isEqualTo(expected.getMeals());
+
     }
 }

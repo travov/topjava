@@ -1,10 +1,12 @@
 package ru.javawebinar.topjava;
 
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
@@ -17,7 +19,11 @@ public class UserTestData {
     public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN);
 
     static {
-        ADMIN.setMeals(Arrays.asList(MealTestData.ADMIN_MEAL1, MealTestData.ADMIN_MEAL2));
+        //ADMIN.setMeals(Arrays.asList(MealTestData.ADMIN_MEAL2, MealTestData.ADMIN_MEAL1));
+        Set<Meal> set = new HashSet<>();
+        set.add(MealTestData.ADMIN_MEAL1);
+        set.add(MealTestData.ADMIN_MEAL2);
+        ADMIN.setMeals(set);
     }
 
     public static void assertMatch(User actual, User expected) {
