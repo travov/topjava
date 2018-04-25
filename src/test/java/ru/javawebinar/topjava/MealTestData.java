@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava;
 
+import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealWithExceed;
 
 import java.time.Month;
 import java.util.Arrays;
@@ -8,7 +10,9 @@ import java.util.List;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+import static ru.javawebinar.topjava.web.json.JsonUtil.writeIgnoreProps;
 
 public class MealTestData {
     public static final int MEAL1_ID = START_SEQ + 2;
@@ -24,6 +28,9 @@ public class MealTestData {
     public static final Meal ADMIN_MEAL2 = new Meal(ADMIN_MEAL_ID + 1, of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
 
     public static final List<Meal> MEALS = Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+
+    public static Meal created = new Meal(null, of(2016, Month.APRIL, 4, 5, 0), "Созданный обед", 800);
+    public static Meal updated = new Meal(MEAL5.getId(), of(2018, Month.APRIL, 4, 5, 0), "Обновленный обед", 1000);
 
     public static Meal getCreated() {
         return new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Созданный ужин", 300);
@@ -43,5 +50,14 @@ public class MealTestData {
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
+    }
+
+    public static <T>ResultMatcher contentJson(List<T> expected) {
+        return content().json(writeIgnoreProps(expected));
+    }
+
+
+    public static ResultMatcher contentJson(Meal expected) {
+        return content().json(writeIgnoreProps(expected));
     }
 }
