@@ -79,8 +79,8 @@ public class MealRestControllerTest extends AbstractControllerTest {
         .param("startTime", "07:00")
         .param("endDate", "2015-05-30")
         .param("endTime", "20:00"))
-                .andExpect(status().isOk())
                 .andDo(print())
+                .andExpect(status().isOk())
         .andExpect(contentJson(Arrays.asList(MEAL1, MEAL2, MEAL3)));
     }
 
