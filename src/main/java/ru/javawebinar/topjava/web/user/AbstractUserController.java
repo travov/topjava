@@ -48,4 +48,9 @@ public abstract class AbstractUserController {
         log.info("getByEmail {}", email);
         return service.getByEmail(email);
     }
+
+    public void checkboxChange(boolean isEnabled, int id){
+        log.info("changeEnable {}", isEnabled);
+        service.changeEnable(isEnabled, id);
+    }
 }

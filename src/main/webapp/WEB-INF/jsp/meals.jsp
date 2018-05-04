@@ -13,32 +13,27 @@
     <div class="container">
     <h3><spring:message code="meal.title"/></h3>
 
-    <form method="post" action="meals/filter">
+    <form id="filterForm">
+        <div class="form-group">
+          <div class="row justify-content-center my-2">
 
-        <table class="table table-sm">
-            <tr>
-                <td scope="col"><label for="startDate" class="col-form-label"> <spring:message code="meal.startDate"/>:   </label></td>
-                <td scope="col"> <input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate}"></td>
-
-                <td scope="col"><label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/>:   </label></td>
-                <td scope="col"><input type="date" class="form-control" id="endDate" name="endDate" value="${param.endDate}"></td>
-
-            </tr>
-
-
-            <tr>
-                <td scope="col"><label for="startTime" class="col-form-label"> <spring:message code="meal.startTime"/>: </label></td>
-                <td scope="col"> <input type="time" class="form-control" id="startTime" name="startTime" value="${param.startTime}"></td>
-
-                <td scope="col"><label for="endTime" class="col-form-label"> <spring:message code="meal.endTime"/>: </label></td>
-                <td scope="col"> <input type="time" class="form-control" id="endTime" name="endTime" value="${param.endTime}"></td>
-            </tr>
-            <tr>
-                <td></td><td></td><td></td>
-                <td align="right"><button type="submit" class="btn btn-primary"><span class="fa fa-filter"></span></button></td>
-            </tr>
-
-        </table>
+              <label for="startDate" class="col-form-label"> <spring:message code="meal.startDate"/>:   </label>
+              <div class="col-2"> <input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate}"> </div>
+               <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/>:   </label>
+              <div class="col-2"><input type="date" class="form-control" id="endDate" name="endDate" value="${param.endDate}"></div>
+          </div>
+         <div class="row justify-content-center my-2">
+             <label for="startTime" class="col-form-label"> <spring:message code="meal.startTime"/>: </label>
+             <div class="col-2"> <input type="time" class="form-control" id="startTime" name="startTime" value="${param.startTime}"></div>
+                <label for="endTime" class="col-form-label"> <spring:message code="meal.endTime"/>: </label>
+             <div class="col-2"> <input type="time" class="form-control" id="endTime" name="endTime" value="${param.endTime}"></div>
+         </div>
+         <div class="row justify-content-sm-end">
+             <div class="col-5">
+                 <button class="btn btn-danger" type="button" onclick="resetFilter()"><span class="fa fa-remove"></span></button>
+                 <button class="btn btn-primary" type="button" onclick="updateTable()"><span class="fa fa-filter"></span></button></div>
+         </div>
+        </div>
     </form>
     <hr>
     <button class="btn btn-primary" onclick="add()">
@@ -58,7 +53,7 @@
         </thead>
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.MealWithExceed"/>
-            <tr data-mealExceed="${meal.exceed}">
+            <tr data-mealExceed="${meal.exceed}" id="${meal.id}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                         <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -69,7 +64,7 @@
                 <td>${meal.calories}</td>
                 <%--<td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>--%>
                 <td><a><span class="fa fa-pencil" style="color: black"></span></a></td>
-                <td><a class="delete" onclick="deleteRow(${meal.id})"><span class="fa fa-remove" style="color: red"></span></a></td>
+                <td><a class="delete"><span class="fa fa-remove" style="color: red"></span></a></td>
             </tr>
         </c:forEach>
     </table>

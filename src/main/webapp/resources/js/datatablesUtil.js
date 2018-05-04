@@ -1,6 +1,6 @@
 function makeEditable() {
     $(".delete").click(function () {
-        deleteRow($(this).attr("id"));
+        deleteRow($(this).closest("tr").attr("id"));
     });
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
@@ -27,11 +27,11 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
+/*function updateTable() {
     $.get(ajaxUrl, function (data) {
         datatableApi.clear().rows.add(data).draw();
     });
-}
+}*/
 
 function save() {
     var form = $("#detailsForm");
@@ -73,4 +73,13 @@ function failNoty(jqXHR) {
         type: "error",
         layout: "bottomRight"
     }).show();
+}
+
+function refreshDatatable(data) {
+    datatableApi.clear().rows.add(data).draw();
+}
+
+function resetFilter() {
+    $("#filterForm").trigger("reset");
+    updateTable();
 }

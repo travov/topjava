@@ -34,4 +34,10 @@ public class AdminAjaxController extends AbstractUserController {
             super.create(user);
         }
     }
+
+    @Override
+    @PostMapping("/{id}")
+    public void checkboxChange(@RequestParam("enabled") boolean isEnabled, @PathVariable("id") int id){
+        super.checkboxChange(isEnabled, id);
+    }
 }
