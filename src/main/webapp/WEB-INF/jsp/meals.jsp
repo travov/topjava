@@ -7,6 +7,7 @@
 <body>
 <script type="text/javascript" src="resources/js/datatablesUtil.js" defer></script>
 <script type="text/javascript" src="resources/js/mealDatatables.js" defer></script>
+<script type="text/javascript" src="webjars/datetimepicker/2.5.14/build/jquery.datetimepicker.full.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -25,22 +26,22 @@
                                     <div class="form-group">
                                         <label class="col-form-label" for="startDate"><spring:message
                                                 code="meal.startDate"/></label>
-                                        <input class="form-control col-8" type="date" name="startDate" id="startDate">
+                                        <input class="form-control col-8" name="startDate" id="startDate">
 
                                         <label class="col-form-label" for="endDate"><spring:message
                                                 code="meal.endDate"/></label>
-                                        <input class="form-control col-8" type="date" name="endDate" id="endDate">
+                                        <input class="form-control col-8" name="endDate" id="endDate">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label class="col-form-label" for="startTime"><spring:message
                                                 code="meal.startTime"/></label>
-                                        <input class="form-control col-5" type="time" name="startTime" id="startTime">
+                                        <input class="form-control col-5" name="startTime" id="startTime">
 
                                         <label class="col-form-label" for="endTime"><spring:message
                                                 code="meal.endTime"/></label>
-                                        <input class="form-control col-5" type="time" name="endTime" id="endTime">
+                                        <input class="form-control col-5"  name="endTime" id="endTime">
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +92,7 @@
 
                     <div class="form-group">
                         <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
+                        <input class="form-control" id="dateTime" name="dateTime"
                                placeholder="<spring:message code="meal.dateTime"/>">
                     </div>
 

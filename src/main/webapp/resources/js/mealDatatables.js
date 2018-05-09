@@ -14,6 +14,18 @@ function clearFilter() {
     $.get(ajaxUrl, updateTableByData);
 }
 
+$.ajaxSetup({
+    converters: {
+        "text json": function (stringData) {
+            var json = JSON.parse(stringData);
+            $(json).each(function () {
+                this.dateTime = this.dateTime.replace("T", " ").substr(0, 16);
+            });
+            return json;
+        }
+    }
+});
+
 $(function () {
     datatableApi = $("#datatable").DataTable({
         "ajax":{
@@ -24,14 +36,7 @@ $(function () {
         "info": true,
         "columns": [
             {
-                "data": "dateTime",
-                "render" : function (date, type, row) {
-                    if (type === "display") {
-                        var arr = date.split("T");
-                        return arr[0] + " " + arr[1];
-                    }
-                    return date;
-                }
+                "data": "dateTime"
             },
             {
                 "data": "description"
@@ -61,4 +66,19 @@ $(function () {
         },
         "initComplete": makeEditable
     });
+
+    $("#startDate, #endDate").datetimepicker({
+        timepicker: false,
+        format: "Y-m-d"
+    });
+
+    $("#startTime, #endTime").datetimepicker({
+        datepicker: false,
+        format: "H:i"
+    });
+
+    $("#dateTime").datetimepicker({
+        format: "Y-m-d H:i"
+    });
+
 });
