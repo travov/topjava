@@ -47,15 +47,18 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         if (e.getCause().getClass().getSimpleName().equals("ConstraintViolationException")){
-            if (e.getCause().getCause().getMessage().contains("email"))
+            Throwable t = e.getCause().getCause();
+            if (t.getMessage().contains("email"))
             return new ErrorInfo(req.getRequestURL(), DATA_ERROR, messageSource.getMessage("user.valid.email", null, req.getLocale()));
+            else if (t.getMessage().contains("date_time"))
+                return new ErrorInfo(req.getRequestURL(), DATA_ERROR, messageSource.getMessage("meal.valid.dateTime", null, req.getLocale()));
         }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)  // 422
     @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class,
-            BindException.class, ConstraintViolationException.class})
+            BindException.class})
     public ErrorInfo illegalRequestDataError(HttpServletRequest req, Exception e, BindingResult result) {
         if (result != null && result.hasErrors()){
             return new ErrorInfo(req.getRequestURL(), VALIDATION_ERROR, ValidationUtil.getErrorResponse(result).getBody());

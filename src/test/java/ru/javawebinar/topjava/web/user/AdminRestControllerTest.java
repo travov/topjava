@@ -44,12 +44,22 @@ public class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     public void testValidPostData() throws Exception{
-        User user = new User(null, "dasd", "user@yandex.ru", "password", 2005, Role.ROLE_USER);
+        User user = new User(null, "   ", "user1312@yandex.ru", "   ", 2005, Role.ROLE_USER);
+        mockMvc.perform(post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .content(UserTestData.jsonWithPassword(user, "   ")).with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testValidEmail() throws Exception{
+        User user = new User(null, "newUser", "user@yandex.ru", "password", 2005, Role.ROLE_USER);
         mockMvc.perform(post(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestData.jsonWithPassword(user, "password")).with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isConflict());
-
     }
 
     @Test

@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -52,6 +55,17 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testValidDatetime() throws Exception{
+        Meal meal = new Meal(null, MEAL3.getDateTime(), "description", 500);
+        mockMvc.perform(post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(meal)).with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(content().string("{\"url\":\"http://localhost/rest/profile/meals/\",\"type\":\"DATA_ERROR\",\"detail\":\"DateTime must not be repeated!\"}"));
+
+    }
     @Test
     public void testGetUnauth() throws Exception {
         mockMvc.perform(get(REST_URL + MEAL1_ID))

@@ -16,6 +16,8 @@
                     <span class="fa fa-sign-out"></span>
                 </button>
             </sec:authorize>
+
+            <jsp:include page="language.jsp" />
         </form:form>
     </div>
 </nav>
