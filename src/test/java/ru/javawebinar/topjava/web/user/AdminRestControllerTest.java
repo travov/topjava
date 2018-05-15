@@ -1,11 +1,18 @@
 package ru.javawebinar.topjava.web.user;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
@@ -32,6 +39,17 @@ public class AdminRestControllerTest extends AbstractControllerTest {
                 // https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentJson(ADMIN));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    public void testValidPostData() throws Exception{
+        User user = new User(null, "dasd", "user@yandex.ru", "password", 2005, Role.ROLE_USER);
+        mockMvc.perform(post(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .content(UserTestData.jsonWithPassword(user, "password")).with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+
     }
 
     @Test

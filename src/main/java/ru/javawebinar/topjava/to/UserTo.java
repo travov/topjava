@@ -2,11 +2,13 @@ package ru.javawebinar.topjava.to;
 
 import org.hibernate.validator.constraints.Range;
 import ru.javawebinar.topjava.util.UserUtil;
+import ru.javawebinar.topjava.web.validator.UserValidation;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 import java.io.Serializable;
 
 public class UserTo extends BaseTo implements Serializable {
@@ -79,5 +81,27 @@ public class UserTo extends BaseTo implements Serializable {
                 ", email='" + email + '\'' +
                 ", caloriesPerDay='" + caloriesPerDay + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserTo userTo = (UserTo) o;
+
+        if (name != null ? !name.equals(userTo.name) : userTo.name != null) return false;
+        if (email != null ? !email.equals(userTo.email) : userTo.email != null) return false;
+        if (password != null ? !password.equals(userTo.password) : userTo.password != null) return false;
+        return caloriesPerDay != null ? caloriesPerDay.equals(userTo.caloriesPerDay) : userTo.caloriesPerDay == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (caloriesPerDay != null ? caloriesPerDay.hashCode() : 0);
+        return result;
     }
 }
